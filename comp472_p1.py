@@ -355,7 +355,7 @@ def BFS(root,limit,goalstate):
     node=root
     if (node[1] == goalstate):
         close.append(node)
-    while (len(open)>0 and (goalstate != node[1]) and (len(close)<=limit)):
+    while (len(open)>0 and (goalstate != node[1]) and (len(close)<limit)):
         node = open.pop()
         if( not checkvalueofnodeBFS(node,close)):
             close.append(node)
@@ -508,7 +508,7 @@ def Astar(root,limit,goalstate):
     node=root
     if (node[1] == goalstate):
         close.append(node)
-    while (len(open)>0 and (goalstate!=node[1]) and (len(close)<=limit)):
+    while (len(open)>0 and (goalstate!=node[1]) and (len(close)<limit)):
         node=open.pop()
 
         if( not checkvalueofnodeBFS(node,close)):
@@ -628,6 +628,24 @@ def generatechildrenBFS2(parent,grandparent,depth,h):
     children.sort(reverse=True)
     return children
 
+def BFS2(root,limit,goalstate):
+    open=[root]
+    close=[]
+    node=root
+    if (node[1] == goalstate):
+        close.append(node)
+    while (len(open)>0 and (goalstate != node[1]) and (len(close)<limit)):
+        node = open.pop()
+        if( not checkvalueofnodeBFS(node,close)):
+            close.append(node)
+            if(len(close)<=limit):
+                children=generatechildrenBFS2(node[1],node[2],node[3],node[0])
+                for child in children:
+                    if( not checkvalueofnodeBFS(child,open)):
+                        open.append(child)
+            open.sort(reverse=True)
+    return close
+
 def IndonesianDotPuzzleBFS2(testfile):
     # list containing of test cases
     testcases = []
@@ -649,7 +667,7 @@ def IndonesianDotPuzzleBFS2(testfile):
         root = [initialh,testcases[i][3],'',1,'0']
         goalstate = generategoalstate(dimension)
         limit=int(testcases[i][2])
-        mycloselist=BFS(root,limit,goalstate)
+        mycloselist=BFS2(root,limit,goalstate)
         mysolutionpath=generatesolutionpathBFS(mycloselist)
         solutionname1=str(i)+"_bfs_solution(h2).txt"
         searchname1=str(i)+"_bfs_search(h2).txt"
@@ -724,7 +742,26 @@ def generatechildrenAstar2(parent,grandparent,depth,f):
     children.sort(reverse=True)
     return children
 
+def Astar2(root,limit,goalstate):
+    open=[root]
+    close=[]
+    node=root
+    if (node[1] == goalstate):
+        close.append(node)
+    while (len(open)>0 and (goalstate!=node[1]) and (len(close)<limit)):
+        node=open.pop()
 
+        if( not checkvalueofnodeBFS(node,close)):
+            close.append(node)
+
+            if(len(close)<=limit):
+                children=generatechildrenAstar2(node[1],node[2],node[3],node[0])
+                for child in children:
+                    if( not checkvalueofnodeBFS(child,open)):
+                        open.append(child)
+            open.sort(reverse=True)
+
+    return close
 
 def IndonesianDotPuzzleAstar2(testfile):
     # list containing of test cases
@@ -747,7 +784,7 @@ def IndonesianDotPuzzleAstar2(testfile):
         root = [initialf,testcases[i][3],'',1,'0']
         goalstate = generategoalstate(dimension)
         limit=int(testcases[i][2])
-        mycloselist=Astar(root,limit,goalstate)
+        mycloselist=Astar2(root,limit,goalstate)
         mysolutionpath=generatesolutionpathBFS(mycloselist)
         solutionname1=str(i)+"_astar_solution(h2).txt"
         searchname1=str(i)+"_astar_search(h2).txt"
@@ -758,8 +795,9 @@ def IndonesianDotPuzzleAstar2(testfile):
 def project1(mytest):
     IndonesianDotPuzzleDFS(mytest)
     IndonesianDotPuzzleBFS(mytest)
-    IndonesianDotPuzzleAstar(mytest)
     IndonesianDotPuzzleBFS2(mytest)
+    IndonesianDotPuzzleAstar(mytest)
+
     IndonesianDotPuzzleAstar2(mytest)
 
 project1("test.txt")
