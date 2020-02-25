@@ -801,3 +801,4 @@ def project1(mytest):
     IndonesianDotPuzzleAstar2(mytest)
 
 project1("test.txt")
+print("finished")
