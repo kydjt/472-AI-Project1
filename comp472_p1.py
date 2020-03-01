@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import heapq
 # a function that generate goals state for size of matrix(al 0s)
 def generategoalstate(dimension):
     mygoalstate = ''
@@ -791,14 +792,126 @@ def IndonesianDotPuzzleAstar2(testfile):
         writesolutionBFS(mysolutionpath,goalstate,solutionname1)
         writesearchpathAstar(mycloselist,searchname1)
         f.close()
+###############
+###############
+#################
+def Astar3(root,limit,goalstate):
+    open=[root]
+    heapq.heapify(open)
+    close=[]
+    node=root
+    if (node[1] == goalstate):
+        close.append(node)
+    while (len(open)>0 and (goalstate!=node[1]) and (len(close)<limit)):
+        node=heapq.heappop(open)
+
+        if( not checkvalueofnodeBFS(node,close)):
+            close.append(node)
+
+            if(len(close)<=limit):
+                children=generatechildrenAstar2(node[1],node[2],node[3],node[0])
+                for child in children:
+                    if( not checkvalueofnodeBFS(child,open)):
+                        heapq.heappush(open,child)
+
+
+    return close
+
+
+
+#########################
+######################
+def IndonesianDotPuzzleAstar3(testfile):
+    # list containing of test cases
+    testcases = []
+
+    # reading the test file and store them line by line test cases
+    with open(testfile) as f:
+        for line in f:
+            testcases.append(line)
+
+    # processing line by line in suitable format, get rid of the '\n' at the end of each line, and split the contents by white space
+    for i in range(len(testcases)):
+        if (i < (len(testcases) - 1)):
+            testcases[i] = testcases[i][:-1]
+        testcases[i] = testcases[i].split()
+
+    for i in range(len(testcases)):
+        dimension=int(testcases[i][0])
+        initialf=1+int(calculateh2(testcases[i][3],dimension))
+        root = [initialf,testcases[i][3],'',1,'0']
+        goalstate = generategoalstate(dimension)
+        limit=int(testcases[i][2])
+        mycloselist=Astar3(root,limit,goalstate)
+        mysolutionpath=generatesolutionpathBFS(mycloselist)
+        solutionname1=str(i)+"_astar_solution(h3).txt"
+        searchname1=str(i)+"_astar_search(h3).txt"
+        writesolutionBFS(mysolutionpath,goalstate,solutionname1)
+        writesearchpathAstar(mycloselist,searchname1)
+        f.close()
+
+def BFS3(root,limit,goalstate):
+    open=[root]
+    close=[]
+    heapq.heapify(open)
+    node=root
+    if (node[1] == goalstate):
+        close.append(node)
+    while (len(open)>0 and (goalstate != node[1]) and (len(close)<limit)):
+        node = heapq.heappop(open)
+        if( not checkvalueofnodeBFS(node,close)):
+            close.append(node)
+            if(len(close)<=limit):
+                children=generatechildrenBFS2(node[1],node[2],node[3],node[0])
+                for child in children:
+                    if( not checkvalueofnodeBFS(child,open)):
+                        heapq.heappush(open,child)
+
+    return close
+
+
+
+
+def IndonesianDotPuzzleBFS3(testfile):
+    # list containing of test cases
+    testcases = []
+    # reading the test file and store them line by line test cases
+    with open(testfile) as f:
+        for line in f:
+            testcases.append(line)
+    # processing line by line in suitable format, get rid of the '\n' at the end of each line, and split the contents by white space
+    for i in range(len(testcases)):
+
+        if (i < (len(testcases) - 1)):
+            testcases[i] = testcases[i][:-1]
+        testcases[i] = testcases[i].split()
+
+
+    for i in range(len(testcases)):
+        dimension=int(testcases[i][0])
+        initialh=int(calculateh2(testcases[i][3],dimension))
+        root = [initialh,testcases[i][3],'',1,'0']
+        goalstate = generategoalstate(dimension)
+        limit=int(testcases[i][2])
+        mycloselist=BFS3(root,limit,goalstate)
+        mysolutionpath=generatesolutionpathBFS(mycloselist)
+        solutionname1=str(i)+"_bfs_solution(h3).txt"
+        searchname1=str(i)+"_bfs_search(h3).txt"
+        writesolutionBFS(mysolutionpath,goalstate,solutionname1)
+        writesearchpathBFS(mycloselist,searchname1)
+        f.close()
+
 
 def project1(mytest):
     IndonesianDotPuzzleDFS(mytest)
     IndonesianDotPuzzleBFS(mytest)
     IndonesianDotPuzzleBFS2(mytest)
     IndonesianDotPuzzleAstar(mytest)
-
     IndonesianDotPuzzleAstar2(mytest)
+    '''IndonesianDotPuzzleBFS3(mytest)
+    IndonesianDotPuzzleAstar3(mytest)'''
 
 project1("test.txt")
-print("finished")
+
+#####################
+##############
